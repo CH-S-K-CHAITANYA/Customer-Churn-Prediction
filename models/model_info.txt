@@ -1,0 +1,6 @@
+Best Model: Logistic Regression
+Accuracy: 68.75%
+Precision: 53.24%
+Recall: 70.91%
+F1 Score: 60.82%
+ROC-AUC: 75.41%
