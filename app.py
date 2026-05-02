@@ -1,4 +1,4 @@
-"""Customer Churn Prediction — Streamlit Dashboard"""
+# app.py """"Customer Churn Prediction — Streamlit Dashboard"""
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -88,6 +88,7 @@ if page == "📊 Overview":
                      hole=0.4)
         fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                           font_color="white")
+        # Plotly gets use_container_width
         st.plotly_chart(fig, use_container_width=True)
     with col2:
         churn_by_contract = raw_df.groupby("Contract_Type")["Churn"].mean().reset_index()
@@ -97,10 +98,12 @@ if page == "📊 Overview":
                      color_discrete_sequence=["#6C5CE7","#00CEC9","#FD79A8"])
         fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                           font_color="white", showlegend=False, yaxis_title="Churn Rate (%)")
+        # Plotly gets use_container_width
         st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("### 📋 Sample Data")
-    st.dataframe(raw_df.head(10), use_container_width=True)
+    # DataFrame gets width='stretch'
+    st.dataframe(raw_df.head(10), width='stretch')
 
 # ═══════════════ PAGE 2: EDA ═══════════════
 elif page == "🔍 EDA":
@@ -171,7 +174,8 @@ elif page == "🤖 Model Results":
     for cf in chart_files:
         path = f"outputs/{cf}"
         if os.path.exists(path):
-            st.image(path, caption=cf.replace("_"," ").replace(".png","").title(), use_container_width=True)
+            # Image gets width='stretch'
+            st.image(path, caption=cf.replace("_"," ").replace(".png","").title(), width='stretch')
             st.markdown("---")
 
 # ═══════════════ PAGE 4: PREDICT ═══════════════
@@ -205,7 +209,8 @@ elif page == "🎯 Predict Churn":
             satisfaction = st.slider("Satisfaction (1-5)", 1, 5, 3)
             complaints = st.slider("Complaints", 0, 8, 1)
 
-        submitted = st.form_submit_button("🔮 Predict Churn", use_container_width=True)
+        # Button gets width='stretch'
+        submitted = st.form_submit_button("🔮 Predict Churn", width='stretch')
 
     if submitted:
         # Build feature dict matching processed columns
@@ -321,7 +326,7 @@ elif page == "💡 Business Insights":
 
     col1, col2 = st.columns(2)
     with col1:
-        tenure_churn = raw_df.groupby(pd.cut(raw_df["Tenure_Months"], bins=[0,6,12,24,48,72]))["Churn"].mean()*100
+        tenure_churn = raw_df.groupby(pd.cut(raw_df["Tenure_Months"], bins=[0,6,12,24,48,72]), observed=False)["Churn"].mean()*100
         fig = px.bar(x=[str(x) for x in tenure_churn.index], y=tenure_churn.values,
                      title="Churn Rate by Tenure Group", labels={"x":"Tenure","y":"Churn Rate (%)"},
                      color_discrete_sequence=["#6C5CE7"])
